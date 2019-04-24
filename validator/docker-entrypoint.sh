@@ -16,8 +16,8 @@ if [[ "$1" == "kong" ]]; then
     kong prepare -p "$PREFIX" "$@"
     
     # workaround for https://github.com/moby/moby/issues/31243
-    chmod o+w /proc/self/fd/1 || true
-    chmod o+w /proc/self/fd/2 || true
+    chmod -f o+w /proc/self/fd/1 || true
+    chmod -f o+w /proc/self/fd/2 || true
 
     if [ "$(id -u)" != "0" ]; then
 #      echo "starting kong (with user root)..."
