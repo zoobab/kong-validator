@@ -20,9 +20,9 @@ if [[ "$1" == "kong" ]]; then
     chmod o+w /proc/self/fd/2 || true
 
     if [ "$(id -u)" != "0" ]; then
-      echo "starting kong (with user root)..."
+#      echo "starting kong (with user root)..."
       kong start 2>&1 > /dev/null
-      kong config -c /etc/kong/kong.conf.default parse /mnt/kong.yml
+      kong config parse /mnt/kong.yml
     else
       if [ ! -z ${SET_CAP_NET_RAW} ] \
           || has_transparent "$KONG_STREAM_LISTEN" \
@@ -32,9 +32,9 @@ if [[ "$1" == "kong" ]]; then
         setcap cap_net_raw=+ep /usr/local/openresty/nginx/sbin/nginx
       fi
       chown -R kong:0 /usr/local/kong
-      echo "starting kong (with user kong)..."
+#      echo "starting kong (with user kong)..."
       su-exec kong kong start 2>&1 > /dev/null
-      su-exec kong kong config -c /etc/kong/kong.conf.default parse /mnt/kong.yml
+      su-exec kong kong config parse /mnt/kong.yml
     fi
   fi
 fi
