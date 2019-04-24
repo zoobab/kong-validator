@@ -20,12 +20,9 @@ if [[ "$1" == "kong" ]]; then
     chmod o+w /proc/self/fd/2 || true
 
     if [ "$(id -u)" != "0" ]; then
-      echo "[1/3] starting kong (with user root)..."
-      kong start
-      echo "[2/3] Removing configMap..."
-      sed  -e "s/configMap:\ |//g" -e "s/^\ \ //g" /mnt/kong.yml > /tmp/kong.yml
-      echo "[2/3] checking the config..."
-      kong config -c /etc/kong/kong.conf.default parse /tmp/kong.yml
+#      echo "starting kong (with user root)..."
+      kong start 2>&1 > /dev/null
+      kong config -c /etc/kong/kong.conf.default parse /mnt/kong.yml
     else
       if [ ! -z ${SET_CAP_NET_RAW} ] \
           || has_transparent "$KONG_STREAM_LISTEN" \
@@ -35,15 +32,9 @@ if [[ "$1" == "kong" ]]; then
         setcap cap_net_raw=+ep /usr/local/openresty/nginx/sbin/nginx
       fi
       chown -R kong:0 /usr/local/kong
-      echo "[1/3] starting kong (with user kong)..."
-      su-exec kong kong start
-      echo "[2/3] Removing configMap..."
-      su-exec kong sed  -e "s/configMap:\ |//g" -e "s/^\ \ //g" /mnt/kong.yml > /tmp/kong.yml
-      chown kong:0 /tmp/kong.yml
-      echo "[2/3] checking the config..."
-      cp /etc/kong/kong.conf.default /tmp/kong.conf.default
-      chown kong:0 /tmp/kong.conf.default
-      su-exec kong kong config -c /tmp/kong.conf.default parse /tmp/kong.yml
+#      echo "starting kong (with user kong)..."
+      su-exec kong kong start 2>&1 > /dev/null
+      su-exec kong kong config -c /etc/kong/kong.conf.default parse /mnt/kong.yml
     fi
   fi
 fi
