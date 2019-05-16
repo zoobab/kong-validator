@@ -28,6 +28,15 @@ $ docker run -it -v /tmp/1:/mnt zoobab/kong-validator
 parse successful
 ```
 
+You can check the shell exit code as well (0 is success, 1 is failure):
+
+```
+$ docker run -it -v /tmp/1:/mnt zoobab/kong-validator
+parse successful
+$ echo $?
+0
+```
+
 Now let's insert an error, replacing ```name:``` by ```name2:```:
 
 ```
@@ -41,4 +50,11 @@ in 'services':
 
   Run with --v (verbose) or --vv (debug) for more details
 $ 
+```
+
+You can check the shell exit code as well (0 is success, 1 is failure):
+
+```
+$ echo $?
+1
 ```
